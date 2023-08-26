@@ -1,23 +1,20 @@
 package com.spbank.bankbackendjwt1.model;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.Fetch;
+
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 public class Accounts {
 
-//	@Column(name = "customer_id")
-//	private Long customerId;
-
 	@Id
+	private Long account_id ;
+
 	@Column(name="account_number")
 	private Long accountNumber;
 
@@ -30,10 +27,15 @@ public class Accounts {
 	@Column(name = "create_dt")
 	private String createDt;
 
-	@JsonIgnore
-	@OneToOne
-	@JoinColumn(name = "customer_id")
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@MapsId
+	@JoinColumn(name="user_id")
 	private User user ;
+
+
+	@OneToMany(mappedBy = "accounts",cascade = CascadeType.ALL)
+	private List<AccountTransactions> accountTransactions ;
 
 
 }

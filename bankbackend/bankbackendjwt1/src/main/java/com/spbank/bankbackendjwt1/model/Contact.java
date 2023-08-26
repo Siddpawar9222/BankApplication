@@ -12,7 +12,6 @@ import java.sql.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 @Table(name = "contact_messages")
 public class Contact {

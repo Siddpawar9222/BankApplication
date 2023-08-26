@@ -13,13 +13,11 @@ import org.hibernate.annotations.GenericGenerator;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 @Table(name="loans")
 public class Loans {
 	@Id
-	@GeneratedValue(strategy= GenerationType.AUTO,generator="native")
-	@GenericGenerator(name = "native",strategy = "native")
+	@GeneratedValue(strategy= GenerationType.AUTO)
 	@Column(name = "loan_number")
 	private int loanNumber;
 
@@ -42,9 +40,9 @@ public class Loans {
 	@Column(name = "create_dt")
 	private String createDt;
 
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name = "customer_id")
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
 	private User user ;
 	
 }

@@ -2,6 +2,11 @@ package com.spbank.bankbackendjwt1.controller;
 
 import java.util.List;
 
+import com.spbank.bankbackendjwt1.dto.AccountTransactionsDto;
+import com.spbank.bankbackendjwt1.dto.AccountsDto;
+import com.spbank.bankbackendjwt1.dto.CardsDto;
+import com.spbank.bankbackendjwt1.dto.LoansDto;
+import com.spbank.bankbackendjwt1.service.ServiceClass;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,77 +29,78 @@ import com.spbank.bankbackendjwt1.repository.CardsRepository;
 import com.spbank.bankbackendjwt1.repository.LoanRepository;
 import com.spbank.bankbackendjwt1.security.services.UserDetailsImpl;
 
-
-//@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/private")
 public class PrivateController {
 
-	
-	@Autowired
-	private AccountsRepository accountsRepository ;
+    @Autowired
+    private ServiceClass serviceClass ;
     
 
-	 @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @GetMapping("/myAccount")
     public ResponseEntity<?> getAccountDetails(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         Long userId = userDetails.getId(); 
 
-//        Accounts accounts = accountsRepository.findByUserId(userId.intValue());
-        Accounts accounts = accountsRepository.findByUserId(userId);
+         AccountsDto accountsDto = serviceClass.getAccountData(userId) ;
 
-        if (accounts != null) {
-            return ResponseEntity.ok(accounts); 
+        if (accountsDto != null) {
+            return ResponseEntity.ok(accountsDto);
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Account not found"); 
         }
     }
 
 
-    
-    @Autowired
-    private AccountTransactionsRepository accountTransactionsRepository;
-
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @GetMapping("/myBalance")
-    public List<AccountTransactions> getBalanceDetails(Authentication authentication) {
+    public ResponseEntity<?> getBalanceDetails(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         Long userId = userDetails.getId();
 
-        List<AccountTransactions> accountTransactions = accountTransactionsRepository.
-                findByUserIdOrderByTransactionDtDesc(userId);
-        
-        return accountTransactions;
+        List<AccountTransactionsDto> accountTransactionsDtos= serviceClass.getTransactionData(userId);
+        if (accountTransactionsDtos.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Transcation Data");
+        } else {
+
+            return   ResponseEntity.ok(accountTransactionsDtos);
+        }
+
     }
 
-    
-    @Autowired
-    private CardsRepository cardsRepository;
+
 
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @GetMapping("/myCards")
-    public List<Cards> getCardDetails(Authentication authentication) {
+    public ResponseEntity<?> getCardDetails(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        Long userId = userDetails.getId(); 
+        Long userId = userDetails.getId();
 
-        List<Cards> cards = cardsRepository.findByUserId(userId);
-        
-        return cards; 
+        List<CardsDto> cardsDtoList = serviceClass.getCardsData(userId);
+        if (cardsDtoList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Cards Data");
+        } else {
+
+           return   ResponseEntity.ok(cardsDtoList);
+        }
     }
 
-    @Autowired
-    private LoanRepository loanRepository;
 
     @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @GetMapping("/myLoans")
-    public List<Loans> getLoanDetails(Authentication authentication) {
+    public ResponseEntity<?> getLoanDetails(Authentication authentication) {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        Long userId = userDetails.getId(); 
+        Long userId = userDetails.getId();
 
-        List<Loans> loans = loanRepository.findByUserIdOrderByStartDtDesc(userId);
-        
-        return loans;
+        List<LoansDto>  cardsDtoList = serviceClass.getLoansData(userId);
+        if (cardsDtoList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No Loans Data");
+        } else {
+              return   ResponseEntity.ok(cardsDtoList);
+        }
+
+
     }
 
     

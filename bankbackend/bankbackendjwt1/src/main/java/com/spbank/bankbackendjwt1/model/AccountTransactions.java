@@ -10,7 +10,6 @@ import java.sql.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 @Table(name="account_transactions")
 public class AccountTransactions {
@@ -36,14 +35,15 @@ public class AccountTransactions {
 	@Column(name = "create_dt")
 	private String createDt;
 
-	@JsonIgnore
-	@ManyToOne
+
+
+
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "account_number")
 	private Accounts accounts ;
 
-	@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name = "customer_id")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
 	private User user ;
 	
 }

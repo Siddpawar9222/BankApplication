@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -15,13 +16,11 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Entity
-@Table(name = "customer")
 public class User {
 	  @Id
 	  @GeneratedValue(strategy = GenerationType.IDENTITY)
-	  @Column(name = "customer_id")
+	  @Column(name = "user_id")
 	  private Long id;
 
 	  @NotBlank
@@ -37,16 +36,39 @@ public class User {
 	  @Size(max = 120)
 	  private String password;
 
-	  @ManyToMany(fetch = FetchType.LAZY)
-	  @JoinTable(  name = "customer_roles",
-	        joinColumns = @JoinColumn(name = "customer_id"),
-	        inverseJoinColumns = @JoinColumn(name = "role_id"))
-	  private Set<Role> roles = new HashSet<>();
-	  
+//===============Mapping====================//
+
+	  @OneToOne(mappedBy = "user" ,fetch = FetchType.LAZY,cascade = CascadeType.ALL, optional = false)
+	  private UserInfo userInfo ;
+
+
+	@ManyToMany
+	@JoinTable(
+			name = "user_roles",
+			joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id")
+	)
+	 private Set<Role> roles = new HashSet<>();
+
+	 @OneToOne(mappedBy = "user" ,fetch = FetchType.LAZY,cascade = CascadeType.ALL,optional = false)
+	  private Accounts accounts ;
+
+	 @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+	 private List<AccountTransactions> accountTransactions ;
+
+	 @OneToMany(mappedBy ="user" ,cascade = CascadeType.ALL)
+	 private List<Cards> cards ;
+
+	 @OneToMany(mappedBy ="user" ,cascade = CascadeType.ALL)
+	 private List<Loans> loans ;
+
+
+
+
 	  public User(String username, String email, String password) {
 		    this.username = username;
 		    this.email = email;
 		    this.password = password;
-		  }
+	  }
     
 }

@@ -33,7 +33,7 @@ const MyBalance = () => {
         My Account
       </Typography>
       <Typography variant="h6" gutterBottom>
-        Current Balance :<strong>{ balance.length != 0 ? balance[0].closingBalance :"" }$ </strong>  
+        Current Balance :<strong>${ balance.length != 0 ? balance[0].closingBalance :"" } </strong>  
       </Typography>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }}>
