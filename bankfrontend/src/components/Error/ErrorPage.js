@@ -6,9 +6,9 @@ const ErrorPage = ({obj}) => {
   const location = useLocation();
   const errorMessage = location.state?.errorMessage || " We're sorry, but the page you're looking for couldn't be found.";
    const resetToggle =()=>{
-    if(obj.tg){
-      obj.fun() ;
-     }
+    // if(obj.tg){
+    //   obj.fun() ;
+    //  }
      sessionStorage.removeItem("jwtToken");
    }
   return (

@@ -11,6 +11,10 @@ axiosInstance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    const xsrf = sessionStorage.getItem("XSRF-TOKEN");
+    if (xsrf) {
+      config.headers['X-XSRF-TOKEN'] = xsrf; 
+    }
     return config;
   },
   (error) => {

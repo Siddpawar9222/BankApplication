@@ -3,6 +3,7 @@ package com.spbank.bankbackendjwt1.security;
 import java.util.Arrays;
 import java.util.Collections;
 
+import com.spbank.bankbackendjwt1.filter.CsrfCookieFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.Bean;
@@ -17,9 +18,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.spbank.bankbackendjwt1.security.jwt.AuthEntryPointJwt;
 import com.spbank.bankbackendjwt1.security.jwt.AuthTokenFilter;
@@ -61,7 +64,10 @@ public class WebSecurityConfig {
   public PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
   }
-  
+
+
+    CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
+
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.
@@ -78,8 +84,10 @@ public class WebSecurityConfig {
             return config;
         }
      }))
-    
-    .csrf(csrf -> csrf.disable())
+
+            .csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/api/auth/**")
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+            .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
         .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> 

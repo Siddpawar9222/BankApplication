@@ -11,6 +11,7 @@ const Logout = ({obj}) => {
   
   const navigation = () => {
     sessionStorage.removeItem("jwtToken");
+    sessionStorage.removeItem("XSRF-TOKEN");
     if(obj.tg){
      obj.fun() ;
     }
