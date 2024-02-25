@@ -77,7 +77,7 @@ const ContactUsPage = () => {
             <LocationOnIcon fontSize="small" /> &nbsp; Address Us
             </Typography>
             <Typography variant="body1">
-              123 Main Street, Pune, India
+              123 Main Street, New York
             </Typography>
           </Paper>
         </Grid>

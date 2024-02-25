@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
-
 import { signIn } from "../service/apiAuth";
+import Cookies from 'js-cookie';
 
 import {
   Card,
@@ -36,7 +36,9 @@ const LoginCard = () => {
       const response = await signIn(login);
 
       if (response.status === 200) {
-        console.log(response.data);
+        const xsrf = Cookies.get("XSRF-TOKEN");
+        sessionStorage.setItem("XSRF-TOKEN",xsrf);
+        console.log(xsrf);
         sessionStorage.setItem("jwtToken", response.data.token);
         const responseData = response.data;
         navigate("/dashboard", { state: { userData: responseData } });
